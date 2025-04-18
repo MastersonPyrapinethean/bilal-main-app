@@ -1,77 +1,75 @@
-import React, { useState, useEffect, useRef } from "react";
-import { FaPlay, FaPlayCircle } from "react-icons/fa";
+import React, { useEffect, useRef, useState } from "react";
+import { FaPlayCircle } from "react-icons/fa";
 
 export default function PlayVideo() {
   const videoRef = useRef(null);
   const audioRef = useRef(null);
   const [mediaPlaying, setMediaPlaying] = useState(false);
   const [userInteracted, setUserInteracted] = useState(false);
+  const [hovered, setHovered] = useState(false);
 
-  // Initialize media and handle autoplay restrictions
+  // Initialize video/audio on mount
   useEffect(() => {
     const video = videoRef.current;
     const audio = audioRef.current;
 
     if (video && audio) {
-      video.muted = true; // Required for autoplay in most browsers
+      video.muted = true;
       video.pause();
       audio.pause();
     }
   }, []);
 
-  // Handle scroll events to toggle between video and audio
+  // Use IntersectionObserver to detect full visibility
   useEffect(() => {
-    const handleScroll = () => {
-      const video = videoRef.current;
-      const audio = audioRef.current;
+    const video = videoRef.current;
+    const audio = audioRef.current;
 
-      if (video && audio && userInteracted) {
-        const videoRect = video.getBoundingClientRect();
-        const isVideoInView = (
-          videoRect.top < window.innerHeight && 
-          videoRect.bottom > 0
-        );
+    if (!video || !audio || !userInteracted) return;
 
-        if (isVideoInView && !mediaPlaying) {
-          video.play().catch(e => console.error("Video play failed:", e));
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && entry.intersectionRatio === 1) {
+          video.play().catch((e) => console.error("Video play failed:", e));
           audio.pause();
           setMediaPlaying(true);
-        } else if (!isVideoInView && mediaPlaying) {
+        } else {
           video.pause();
-          audio.play().catch(e => console.error("Audio play failed:", e));
+          audio.play().catch((e) => console.error("Audio play failed:", e));
           setMediaPlaying(false);
         }
-      }
-    };
+      },
+      { threshold: 1.0 } // 100% visible
+    );
 
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    observer.observe(video);
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [mediaPlaying, userInteracted]);
+    return () => observer.disconnect();
+  }, [userInteracted]);
 
   const handlePlay = () => {
     const video = videoRef.current;
     const audio = audioRef.current;
 
     if (video && audio) {
-      video.play()
+      video
+        .play()
         .then(() => {
           setMediaPlaying(true);
           setUserInteracted(true);
           audio.pause();
         })
-        .catch(e => {
+        .catch((e) => {
           console.error("Playback failed:", e);
-          // If video play fails, try with muted audio
           video.muted = true;
-          video.play()
+          video
+            .play()
             .then(() => {
               setMediaPlaying(true);
               setUserInteracted(true);
               audio.pause();
             })
-            .catch(e => console.error("Muted playback also failed:", e));
+            .catch((e) => console.error("Muted playback also failed:", e));
         });
     }
   };
@@ -93,11 +91,11 @@ export default function PlayVideo() {
         ref={videoRef}
         muted
         loop
-        style={{ 
-          width: "80%", 
-          height: "70%", 
+        style={{
+          width: "80%",
+          height: "70%",
           zIndex: 1,
-          cursor: "pointer"
+          cursor: "pointer",
         }}
         onClick={mediaPlaying ? handlePause : handlePlay}
       >
@@ -111,43 +109,42 @@ export default function PlayVideo() {
       </audio>
 
       {!mediaPlaying && (
-  <div
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      zIndex: 2,
-      pointerEvents: "none"
-    }}
-  >
-    <div 
-      style={{
-        backgroundColor: 'white',
-        borderRadius: "50%",
-        padding: "12px",
-        cursor: "pointer",
-        pointerEvents: "auto",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-        transition: "transform 0.2s",
-        transform: "scale(1)",
-        ':hover': {
-          transform: "scale(1.05)"
-        }
-      }}
-      onClick={handlePlay}
-    >
-      <FaPlayCircle size={40} color="black" />
-    </div>
-  </div>
-)}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 2,
+            pointerEvents: "none",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "50%",
+              padding: "12px",
+              cursor: "pointer",
+              pointerEvents: "auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+              transition: "transform 0.2s ease",
+              transform: hovered ? "scale(1.05)" : "scale(1)",
+            }}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            onClick={handlePlay}
+          >
+            <FaPlayCircle size={40} color="black" />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

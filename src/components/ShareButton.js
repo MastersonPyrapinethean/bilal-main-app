@@ -1,36 +1,36 @@
 import React, { useState } from "react";
 import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  LinkedinShareButton,
-  EmailShareButton,
-  TumblrShareButton,
-  TumblrIcon,
-  TelegramShareButton,
-  TelegramIcon,
-  VKShareButton,
-  VKIcon,
-  PinterestShareButton,
-  PinterestIcon,
   EmailIcon,
+  EmailShareButton,
   FacebookIcon,
-  WhatsappIcon,
+  FacebookShareButton,
   LinkedinIcon,
-  TwitterIcon,
-  RedditShareButton,
-  RedditIcon,
-  ViberShareButton,
-  ViberIcon,
-  PocketShareButton,
+  LinkedinShareButton,
+  PinterestIcon,
+  PinterestShareButton,
   PocketIcon,
+  PocketShareButton,
+  RedditIcon,
+  RedditShareButton,
+  TelegramIcon,
+  TelegramShareButton,
+  TumblrIcon,
+  TumblrShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  ViberIcon,
+  ViberShareButton,
+  VKIcon,
+  VKShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
 } from "react-share";
-import youtube1 from "./images/youtube1.png";
-import kakao from "./images/kakao.png";
 import blogger from "./images/blogger.png";
-import tiktok from "./images/tiktok.png";
+import kakao from "./images/kakao.png";
 import white from "./images/shareicon2.gif";
-import logo from './images/WITH-ALPHA-CHANNEL_GIhan_BTV_Creation_2nd-option__the-better-Y-BUTTON_Fiverr-Test_.gif';
+import tiktok from "./images/tiktok.png";
+import logo from "./images/WITH-ALPHA-CHANNEL_GIhan_BTV_Creation_2nd-option__the-better-Y-BUTTON_Fiverr-Test_.gif";
+import youtube1 from "./images/youtube1.png";
 
 export default function ShareButton() {
   const shareUrl = "https://yaavaay.com/";
@@ -64,23 +64,25 @@ export default function ShareButton() {
 
   return (
     /* eslint-disable */
-    <div className="share-container" style={{ position: 'relative', height: '200px', paddingTop: '50px', marginTop: '100px' }}>
+    <div
+      className="share-container"
+      style={{
+        position: "relative",
+        height: "200px",
+        paddingTop: "50px",
+        marginTop: "100px",
+      }}
+    >
       <span
         className="icon"
         onClick={() => handleShareClick()}
         role="button"
         tabIndex={0}
       >
-        <img
-          className="share-social-icon"
-          src={white}
-          size="2x"
-          style={{
-          }}
-        />
+        <img className="share-social-icon" src={white} size="2x" style={{}} />
       </span>
       {showShareMenu && (
-        <div className="popup" style={{ position: 'absolute', top: '140px' }}>
+        <div className="popup" style={{ position: "absolute", top: "140px" }}>
           <div className="container-icone">
             <span
               className="popup-close-icon"
